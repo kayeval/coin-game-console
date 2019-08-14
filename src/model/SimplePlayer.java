@@ -21,7 +21,7 @@ public class SimplePlayer implements Player {
 
     @Override
     public String getPlayerName() {
-        return null;
+        return playerName;
     }
 
     @Override
