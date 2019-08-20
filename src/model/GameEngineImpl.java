@@ -21,54 +21,17 @@ public class GameEngineImpl implements GameEngine {
 
     @Override
     public void spinPlayer(Player player, int initialDelay1, int finalDelay1, int delayIncrement1, int initialDelay2, int finalDelay2, int delayIncrement2) throws IllegalArgumentException {
-//      1. coins are initialised at their random starting face
-//    * 2. for each coin start at initialDelay then increment the delays for each coin on each iteration
-//    * 3. call GameEngineCallback.playerCoinUpdate(...) for each coin separately
-//    * 4. continue until both delays {@literal >=} finalDelay
-//    * 5. call GameEngineCallback.playerResult(...) to finish
-//    * NOTE: for assignment 1 you can assume the values passed for the delays are the same for coins 1 and 2
-//          * and therefore optionally use only the first three delay parameters
-
-//        @throws IllegalArgumentException thrown when: <UL>
-//    * <LI> if any of the delay params are < 0
-//    * <LI> either of the finalDelay < initialDelay
-//    * <LI> either of the delayIncrement > (finalDelay - initialDelay)
-
-        int delay = initialDelay1;
-        CoinPair coinPair = null;
-
-        while (delay < finalDelay1) {
-            coinPair = new CoinPairImpl();
-
-            player.setResult(coinPair);
-            Coin[] coins = {coinPair.getCoin1(), coinPair.getCoin2()};
-
-            for (Coin coin : coins)
-                for (GameEngineCallback gameEngineCallback : gameEngineCallbacks)
-                    gameEngineCallback.playerCoinUpdate(player, coin, this);
-
-            delay += delayIncrement1;
-        }
+        CoinPair finalCoins = spinCoins(player, player.getResult().getCoin1(), player.getResult().getCoin2(), initialDelay1, finalDelay1, delayIncrement1, initialDelay2, finalDelay2, delayIncrement2);
+        player.setResult(finalCoins);
 
         for (GameEngineCallback gameEngineCallback : gameEngineCallbacks)
-            gameEngineCallback.playerResult(player, coinPair, this);
+            gameEngineCallback.playerResult(player, finalCoins, this);
     }
 
     @Override
     public void spinSpinner(int initialDelay1, int finalDelay1, int delayIncrement1, int initialDelay2, int finalDelay2, int delayIncrement2) throws IllegalArgumentException {
-        int delay = initialDelay1;
-        CoinPair coinPair = null;
-
-        while (delay < finalDelay1) {
-            coinPair = new CoinPairImpl();
-            Coin[] coins = {coinPair.getCoin1(), coinPair.getCoin2()};
-
-            for (Coin coin : coins)
-                for (GameEngineCallback gameEngineCallback : gameEngineCallbacks)
-                    gameEngineCallback.spinnerCoinUpdate(coin, this);
-
-            delay += delayIncrement1;
-        }
+        CoinPair coinPair = new CoinPairImpl();
+        CoinPair finalCoins = spinCoins(null, coinPair.getCoin1(), coinPair.getCoin2(), initialDelay1, finalDelay1, delayIncrement1, initialDelay2, finalDelay2, delayIncrement2);
 
         for (GameEngineCallback gameEngineCallback : gameEngineCallbacks)
             gameEngineCallback.spinnerResult(coinPair, this);
@@ -128,5 +91,40 @@ public class GameEngineImpl implements GameEngine {
             player.resetBet();
 
         return false;
+    }
+
+    private CoinPair spinCoins(Player player, Coin coin1, Coin coin2, int initialDelay1, int finalDelay1, int delayIncrement1, int initialDelay2, int finalDelay2, int delayIncrement2) {
+        if (initialDelay1 < 0 || finalDelay1 < 0 || delayIncrement1 < 0 || initialDelay2 < 0 || finalDelay2 < 0 || delayIncrement2 < 0)
+            throw new IllegalArgumentException();
+
+        if (finalDelay1 < initialDelay1 || finalDelay2 < initialDelay2)
+            throw new IllegalArgumentException();
+
+        if (delayIncrement1 > (finalDelay1 - initialDelay1) || delayIncrement2 > (finalDelay2 - initialDelay2))
+            throw new IllegalArgumentException();
+
+        int delay = initialDelay1;
+
+        while (delay < finalDelay1) {
+            coin1.flip();
+            coin2.flip();
+
+            for (Coin coin : new Coin[]{coin1, coin2})
+                for (GameEngineCallback gameEngineCallback : gameEngineCallbacks)
+                    if (player == null)
+                        gameEngineCallback.spinnerCoinUpdate(coin, this);
+                    else
+                        gameEngineCallback.playerCoinUpdate(player, coin, this);
+
+            try {
+                Thread.sleep(delay);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+
+            delay += delayIncrement1;
+        }
+
+        return new CoinPairImpl(coin1, coin2);
     }
 }

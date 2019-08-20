@@ -46,5 +46,11 @@ public class GameEngineCallbackImpl implements GameEngineCallback {
     @Override
     public void spinnerResult(CoinPair coinPair, GameEngine engine) {
         logger.log(Level.INFO, String.format("Spinner, final result=%s", coinPair.toString()));
+
+        StringBuilder sb = new StringBuilder();
+        for (Player player : engine.getAllPlayers())
+            sb.append(player.toString()).append('\n');
+
+        logger.log(Level.INFO, "Final Player Results\n" + sb);
     }
 }

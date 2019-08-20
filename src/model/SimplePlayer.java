@@ -17,6 +17,7 @@ public class SimplePlayer implements Player {
         setPlayerName(playerName);
         setPoints(initialPoints);
         resetBet();
+        setResult(new CoinPairImpl());
     }
 
     @Override
@@ -26,6 +27,9 @@ public class SimplePlayer implements Player {
 
     @Override
     public void setPlayerName(String playerName) {
+        if (playerName.equals(""))
+            throw new IllegalArgumentException();
+
         this.playerName = playerName;
     }
 
@@ -36,6 +40,9 @@ public class SimplePlayer implements Player {
 
     @Override
     public void setPoints(int points) {
+        if (points < 0)
+            throw new IllegalArgumentException();
+
         this.points = points;
     }
 
@@ -61,6 +68,9 @@ public class SimplePlayer implements Player {
 
     @Override
     public void setBetType(BetType betType) {
+        if (betType == null)
+            throw new IllegalArgumentException();
+
         this.betType = betType;
     }
 
@@ -82,6 +92,9 @@ public class SimplePlayer implements Player {
 
     @Override
     public void setResult(CoinPair coinPair) {
+        if (coinPair == null)
+            throw new IllegalArgumentException();
+
         this.coinPair = coinPair;
     }
 

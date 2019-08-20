@@ -3,10 +3,11 @@ package model;
 import model.enumeration.CoinFace;
 import model.interfaces.Coin;
 
+import java.util.Objects;
 import java.util.Random;
 
 public class CoinImpl implements Coin {
-    private int number;
+    private final int number;
     private CoinFace coinFace;
 
     public CoinImpl(int number) {
@@ -34,13 +35,13 @@ public class CoinImpl implements Coin {
 
     @Override
     public boolean equals(Coin coin) {
-        //TODO: TEST for all boolean methods: IF NULL PARAMETER, return val = false
-        //need to check if same number or not?
         return coin.getFace() == this.getFace() && coin.getNumber() == this.getNumber();
     }
 
     @Override
     public boolean equals(Object coin) {
+        if (coin == this)
+            return true;
 
         if (coin instanceof Coin)
             return equals((Coin) coin);
@@ -50,10 +51,7 @@ public class CoinImpl implements Coin {
 
     @Override
     public int hashCode() {
-        //NOTE: if equals() is true then generated hashCode should also be equal
-
-
-        return 0;
+        return Objects.hash(number, coinFace);
     }
 
     @Override
