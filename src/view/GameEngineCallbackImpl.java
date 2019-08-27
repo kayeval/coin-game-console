@@ -26,16 +26,14 @@ public class GameEngineCallbackImpl implements GameEngineCallback {
 
     public void playerCoinUpdate(Player player, Coin coin, GameEngine engine) {
         // intermediate results logged at Level.FINE
-        //TODO: CHANGE LEVEL BACK TO FINE
-        logger.log(Level.INFO, String.format("%s coin %d flipped to %s", player.getPlayerName(), coin.getNumber(),
-                coin.getFace().toString().substring(0, 1) + coin.getFace().toString().substring(1).toLowerCase()));
+        logger.log(Level.FINE, String.format("%s coin %d flipped to %s", player.getPlayerName(), coin.getNumber(),
+                coin.getFace().toString()));
     }
 
     @Override
     public void spinnerCoinUpdate(Coin coin, GameEngine engine) {
-        //TODO: CHANGE LEVEL BACK TO FINE
-        logger.log(Level.INFO, String.format("Spinner coin %d flipped to %s", coin.getNumber(),
-                coin.getFace().toString().substring(0, 1) + coin.getFace().toString().substring(1).toLowerCase()));
+        logger.log(Level.FINE, String.format("Spinner coin %d flipped to %s", coin.getNumber(),
+                coin.getFace().toString()));
     }
 
     public void playerResult(Player player, CoinPair coinPair, GameEngine engine) {

@@ -9,14 +9,13 @@ import view.interfaces.GameEngineCallback;
 
 import java.util.*;
 
-//TODO : IMPLEMENT METHODS + CONSTRUCTOR?
-
 public class GameEngineImpl implements GameEngine {
-    private HashMap<String, Player> players = new HashMap<>();
-    private List<GameEngineCallback> gameEngineCallbacks = new ArrayList<>();
+    private HashMap<String, Player> players;
+    private List<GameEngineCallback> gameEngineCallbacks;
 
     public GameEngineImpl() {
-
+        players = new HashMap<>();
+        gameEngineCallbacks = new ArrayList<>();
     }
 
     @Override
@@ -33,8 +32,11 @@ public class GameEngineImpl implements GameEngine {
         CoinPair coinPair = new CoinPairImpl();
         CoinPair finalCoins = spinCoins(null, coinPair.getCoin1(), coinPair.getCoin2(), initialDelay1, finalDelay1, delayIncrement1, initialDelay2, finalDelay2, delayIncrement2);
 
+        applyBetResults(finalCoins);
+
         for (GameEngineCallback gameEngineCallback : gameEngineCallbacks)
-            gameEngineCallback.spinnerResult(coinPair, this);
+            gameEngineCallback.spinnerResult(finalCoins, this);
+
     }
 
     @Override
@@ -121,7 +123,6 @@ public class GameEngineImpl implements GameEngine {
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-
             delay += delayIncrement1;
         }
 

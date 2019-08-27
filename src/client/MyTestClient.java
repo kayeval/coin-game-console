@@ -23,8 +23,16 @@ import java.util.logging.Logger;
  * @author Caspar Ryan
  */
 
-// TODO: ASK ABOUT SETTER METHODS - INPUT CHECK when setting fields? + WHEN TO COMMENT?
-// TODO: MORE CHECKING IN TEST CLIENT
+// The following will be tested:
+//Add/Remove Players;
+//Refuse an illegal bet;
+//Place a valid bet;
+//Coin and CoinPair behaviour (including equals()/hashCode() functionality);
+//Unmodifiable Collection;
+//Spin Coins (Delay, Result, Sequence, Callback number and sequencing);
+//Spin Coins a Second Time (to test GameEngine state handling);
+//applyBetResults() produces correct outcome based on result and BetType (table 1 in spec)
+    //TODO: Q: spin player output for player with no bet?
 
 public class MyTestClient {
     private static final Logger logger = Logger.getLogger(MyTestClient.class.getName());
@@ -62,5 +70,12 @@ public class MyTestClient {
         // reset bets for next round if you were playing again
         for (Player player : gameEngine.getAllPlayers())
             player.resetBet();
+
+        for (Player player : gameEngine.getAllPlayers()) {
+            gameEngine.placeBet(player, 1500, BetType.values()[enumOrdinal++ % BetType.values().length]);
+            gameEngine.spinPlayer(player, 100, 1000, 100, 50, 500, 50);
+        }
+
+        gameEngine.spinSpinner(100, 1000, 200, 50, 500, 25);
     }
 }

@@ -11,6 +11,9 @@ public class CoinImpl implements Coin {
     private CoinFace coinFace;
 
     public CoinImpl(int number) {
+        if (number < 0)
+            throw new IllegalArgumentException();
+
         this.number = number;
         coinFace = CoinFace.values()[new Random().nextInt(CoinFace.values().length)];
     }
@@ -43,10 +46,11 @@ public class CoinImpl implements Coin {
         if (coin == this)
             return true;
 
-        if (coin instanceof Coin)
-            return equals((Coin) coin);
+        if (coin == null || getClass() != coin.getClass()) {
+            return false;
+        }
 
-        return false;
+        return equals((Coin) coin);
     }
 
     @Override
@@ -56,6 +60,6 @@ public class CoinImpl implements Coin {
 
     @Override
     public String toString() {
-        return String.format("Coin %d: %s", number, (getFace().toString().substring(0, 1) + getFace().toString().substring(1).toLowerCase()));
+        return String.format("Coin %d: %s", number, getFace().toString());
     }
 }

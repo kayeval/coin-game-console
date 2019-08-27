@@ -23,8 +23,6 @@ import java.util.logging.Logger;
  * @author Caspar Ryan
  */
 
-//TODO: SETTER METHODS - INPUT CHECK?, ALL IMPL methods, MORE CHECKING VIA EXTENDING SIMPLETESTCLIENT, BETTYPE ALWAYS THE SAME?
-
 public class SimpleTestClient {
     private static final Logger logger = Logger.getLogger(SimpleTestClient.class.getName());
 
@@ -56,13 +54,6 @@ public class SimpleTestClient {
         logger.log(Level.INFO, "SPINNING ...");
         // OutputTrace.pdf was generated with these parameter values (using only first 3 params as per spec)
         gameEngine.spinSpinner(100, 1000, 200, 50, 500, 25);
-
-        // display final results
-        StringBuilder sb = new StringBuilder();
-        for (Player player : gameEngine.getAllPlayers())
-            sb.append(player.toString()).append('\n');
-
-        logger.log(Level.INFO, "Final Player Results\n" + sb);
 
         // reset bets for next round if you were playing again
         for (Player player : gameEngine.getAllPlayers())

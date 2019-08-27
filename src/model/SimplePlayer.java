@@ -53,7 +53,7 @@ public class SimplePlayer implements Player {
 
     @Override
     public boolean setBet(int bet) {
-        if (bet > 0 && (points - bet) > 0) {
+        if (bet > 0 && (points - bet) >= 0) {
             this.bet = bet;
             return true;
         }
