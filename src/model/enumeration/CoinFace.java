@@ -6,13 +6,5 @@ package model.enumeration;
  * @author Caspar Ryan
  */
 public enum CoinFace {
-    HEADS {
-        public String toString() {
-            return "Heads";
-        }
-    }, TAILS {
-        public String toString() {
-            return "Tails";
-        }
-    }
+    HEADS, TAILS
 }

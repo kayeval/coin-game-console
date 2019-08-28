@@ -6,6 +6,8 @@ import model.interfaces.Coin;
 import java.util.Objects;
 import java.util.Random;
 
+import static model.Helper.toTitleCase;
+
 public class CoinImpl implements Coin {
     private final int number;
     private CoinFace coinFace;
@@ -60,6 +62,6 @@ public class CoinImpl implements Coin {
 
     @Override
     public String toString() {
-        return String.format("Coin %d: %s", number, getFace().toString());
+        return String.format("Coin %d: %s", number, toTitleCase(getFace().toString()));
     }
 }

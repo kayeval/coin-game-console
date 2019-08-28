@@ -32,7 +32,6 @@ import java.util.logging.Logger;
 //Spin Coins (Delay, Result, Sequence, Callback number and sequencing);
 //Spin Coins a Second Time (to test GameEngine state handling);
 //applyBetResults() produces correct outcome based on result and BetType (table 1 in spec)
-    //TODO: Q: spin player output for player with no bet?
 
 public class MyTestClient {
     private static final Logger logger = Logger.getLogger(MyTestClient.class.getName());

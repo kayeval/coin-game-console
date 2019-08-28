@@ -9,6 +9,8 @@ import view.interfaces.GameEngineCallback;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import static model.Helper.toTitleCase;
+
 /**
  * Skeleton implementation of GameEngineCallback showing Java logging behaviour
  *
@@ -27,13 +29,13 @@ public class GameEngineCallbackImpl implements GameEngineCallback {
     public void playerCoinUpdate(Player player, Coin coin, GameEngine engine) {
         // intermediate results logged at Level.FINE
         logger.log(Level.FINE, String.format("%s coin %d flipped to %s", player.getPlayerName(), coin.getNumber(),
-                coin.getFace().toString()));
+                toTitleCase(coin.getFace().toString())));
     }
 
     @Override
     public void spinnerCoinUpdate(Coin coin, GameEngine engine) {
         logger.log(Level.FINE, String.format("Spinner coin %d flipped to %s", coin.getNumber(),
-                coin.getFace().toString()));
+                toTitleCase(coin.getFace().toString())));
     }
 
     public void playerResult(Player player, CoinPair coinPair, GameEngine engine) {
