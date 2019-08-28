@@ -70,6 +70,7 @@ public class MyTestClient {
         for (Player player : gameEngine.getAllPlayers())
             player.resetBet();
 
+        //spin a second time
         for (Player player : gameEngine.getAllPlayers()) {
             gameEngine.placeBet(player, 1500, BetType.values()[enumOrdinal++ % BetType.values().length]);
             gameEngine.spinPlayer(player, 100, 1000, 100, 50, 500, 50);
