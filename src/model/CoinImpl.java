@@ -6,7 +6,7 @@ import model.interfaces.Coin;
 import java.util.Objects;
 import java.util.Random;
 
-import static model.Helper.toTitleCase;
+import static model.util.Helper.toTitleCase;
 
 public class CoinImpl implements Coin {
     private final int number;

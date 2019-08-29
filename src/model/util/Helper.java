@@ -1,4 +1,4 @@
-package model;
+package model.util;
 
 public class Helper {
     public static String toTitleCase(String input) {

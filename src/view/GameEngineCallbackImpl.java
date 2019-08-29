@@ -1,5 +1,6 @@
 package view;
 
+import model.enumeration.BetType;
 import model.interfaces.Coin;
 import model.interfaces.CoinPair;
 import model.interfaces.GameEngine;
@@ -9,7 +10,7 @@ import view.interfaces.GameEngineCallback;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import static model.Helper.toTitleCase;
+import static model.util.Helper.toTitleCase;
 
 /**
  * Skeleton implementation of GameEngineCallback showing Java logging behaviour
@@ -27,9 +28,11 @@ public class GameEngineCallbackImpl implements GameEngineCallback {
     }
 
     public void playerCoinUpdate(Player player, Coin coin, GameEngine engine) {
-        // intermediate results logged at Level.FINE
-        logger.log(Level.FINE, String.format("%s coin %d flipped to %s", player.getPlayerName(), coin.getNumber(),
-                toTitleCase(coin.getFace().toString())));
+        // only log if player's bet type is not NO_BET
+        if (player.getBetType() != BetType.NO_BET)
+            // intermediate results logged at Level.FINE
+            logger.log(Level.FINE, String.format("%s coin %d flipped to %s", player.getPlayerName(), coin.getNumber(),
+                    toTitleCase(coin.getFace().toString())));
     }
 
     @Override
