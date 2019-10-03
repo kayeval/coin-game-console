@@ -40,7 +40,7 @@ public class CoinImpl implements Coin {
 
     @Override
     public boolean equals(Coin coin) {
-        return coin.getFace() == this.getFace() && coin.getNumber() == this.getNumber();
+        return coin.getFace() == this.getFace();
     }
 
     @Override
@@ -48,7 +48,7 @@ public class CoinImpl implements Coin {
         if (coin == this)
             return true;
 
-        if (coin == null || getClass() != coin.getClass()) {
+        if (!(coin instanceof Coin)) {
             return false;
         }
 
@@ -57,7 +57,7 @@ public class CoinImpl implements Coin {
 
     @Override
     public int hashCode() {
-        return Objects.hash(number, coinFace);
+        return Objects.hash(coinFace);
     }
 
     @Override
