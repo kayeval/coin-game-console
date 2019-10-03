@@ -62,11 +62,7 @@ public class GameEngineImpl implements GameEngine {
 
     @Override
     public boolean removePlayer(Player player) {
-        if (players.get(player.getPlayerId()) == null)
-            return false;
-
-        players.remove(player.getPlayerId());
-        return true;
+        return players.remove(player.getPlayerId()) != null;
     }
 
     @Override
