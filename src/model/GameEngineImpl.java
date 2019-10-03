@@ -10,7 +10,7 @@ import view.interfaces.GameEngineCallback;
 import java.util.*;
 
 public class GameEngineImpl implements GameEngine {
-    private HashMap<String, Player> players;
+    private Map<String, Player> players;
     private List<GameEngineCallback> gameEngineCallbacks;
 
     public GameEngineImpl() {
