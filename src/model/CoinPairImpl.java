@@ -42,7 +42,7 @@ public final class CoinPairImpl implements CoinPair {
         if (coinPair == this)
             return true;
 
-        if (coinPair == null || getClass() != coinPair.getClass()) {
+        if (!(coinPair instanceof CoinPair)) {
             return false;
         }
 
