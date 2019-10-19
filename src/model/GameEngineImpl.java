@@ -12,6 +12,8 @@ import java.util.*;
 public class GameEngineImpl implements GameEngine {
     private Map<String, Player> players;
     private List<GameEngineCallback> gameEngineCallbacks;
+    private Thread coin1Spin, coin2Spin;
+    private CoinPair spinnerCoinPair;
 
     public GameEngineImpl() {
         players = new HashMap<>();
@@ -20,23 +22,47 @@ public class GameEngineImpl implements GameEngine {
 
     @Override
     public void spinPlayer(Player player, int initialDelay1, int finalDelay1, int delayIncrement1, int initialDelay2, int finalDelay2, int delayIncrement2) throws IllegalArgumentException {
-        CoinPair finalCoins = spinCoins(player, player.getResult().getCoin1(), player.getResult().getCoin2(), initialDelay1, finalDelay1, delayIncrement1, initialDelay2, finalDelay2, delayIncrement2);
-        player.setResult(finalCoins);
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    CoinPair finalCoins = spinCoins(player, player.getResult().getCoin1(), player.getResult().getCoin2(), initialDelay1, finalDelay1, delayIncrement1, initialDelay2, finalDelay2, delayIncrement2);
 
-        for (GameEngineCallback gameEngineCallback : gameEngineCallbacks)
-            gameEngineCallback.playerResult(player, finalCoins, this);
+                    coin1Spin.join();
+                    coin2Spin.join();
+
+                    player.setResult(finalCoins);
+
+                    for (GameEngineCallback gameEngineCallback : gameEngineCallbacks)
+                        gameEngineCallback.playerResult(player, finalCoins, GameEngineImpl.this);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
     }
 
     @Override
     public void spinSpinner(int initialDelay1, int finalDelay1, int delayIncrement1, int initialDelay2, int finalDelay2, int delayIncrement2) throws IllegalArgumentException {
-        CoinPair coinPair = new CoinPairImpl();
-        CoinPair finalCoins = spinCoins(null, coinPair.getCoin1(), coinPair.getCoin2(), initialDelay1, finalDelay1, delayIncrement1, initialDelay2, finalDelay2, delayIncrement2);
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    spinnerCoinPair = new CoinPairImpl();
+                    CoinPair finalCoins = spinCoins(null, spinnerCoinPair.getCoin1(), spinnerCoinPair.getCoin2(), initialDelay1, finalDelay1, delayIncrement1, initialDelay2, finalDelay2, delayIncrement2);
 
-        applyBetResults(finalCoins);
+                    coin1Spin.join();
+                    coin2Spin.join();
 
-        for (GameEngineCallback gameEngineCallback : gameEngineCallbacks)
-            gameEngineCallback.spinnerResult(finalCoins, this);
+                    applyBetResults(finalCoins);
 
+                    for (GameEngineCallback gameEngineCallback : gameEngineCallbacks)
+                        gameEngineCallback.spinnerResult(finalCoins, GameEngineImpl.this);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
     }
 
     @Override
@@ -101,26 +127,57 @@ public class GameEngineImpl implements GameEngine {
         if (delayIncrement1 > (finalDelay1 - initialDelay1) || delayIncrement2 > (finalDelay2 - initialDelay2))
             throw new IllegalArgumentException();
 
-        int delay = initialDelay1;
+        coin1Spin = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                int delay1 = initialDelay1;
 
-        while (delay < finalDelay1) {
-            coin1.flip();
-            coin2.flip();
+                while (delay1 < finalDelay1) {
+                    coin1.flip();
 
-            for (Coin coin : new Coin[]{coin1, coin2})
-                for (GameEngineCallback gameEngineCallback : gameEngineCallbacks)
-                    if (player == null)
-                        gameEngineCallback.spinnerCoinUpdate(coin, this);
-                    else
-                        gameEngineCallback.playerCoinUpdate(player, coin, this);
+                    for (GameEngineCallback gameEngineCallback : gameEngineCallbacks)
+                        if (player == null)
+                            gameEngineCallback.spinnerCoinUpdate(coin1, GameEngineImpl.this);
+                        else
+                            gameEngineCallback.playerCoinUpdate(player, coin1, GameEngineImpl.this);
 
-            try {
-                Thread.sleep(delay);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
+                    try {
+                        Thread.sleep(delay1);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    delay1 += delayIncrement1;
+                }
             }
-            delay += delayIncrement1;
-        }
+        });
+
+        coin1Spin.start();
+
+        coin2Spin = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                int delay2 = initialDelay2;
+
+                while (delay2 < finalDelay2) {
+                    coin2.flip();
+
+                    for (GameEngineCallback gameEngineCallback : gameEngineCallbacks)
+                        if (player == null)
+                            gameEngineCallback.spinnerCoinUpdate(coin2, GameEngineImpl.this);
+                        else
+                            gameEngineCallback.playerCoinUpdate(player, coin2, GameEngineImpl.this);
+
+                    try {
+                        Thread.sleep(delay2);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    delay2 += delayIncrement2;
+                }
+            }
+        });
+
+        coin2Spin.start();
 
         return new CoinPairImpl(coin1, coin2);
     }
